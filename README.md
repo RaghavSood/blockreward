@@ -2,7 +2,7 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/RaghavSood/blockreward.svg)](https://pkg.go.dev/github.com/RaghavSood/blockreward)
 
-Convinience library to calculate block rewards for various bitcoin-like cryptocurrencies.
+Convenience library to calculate block rewards for various bitcoin-like cryptocurrencies.
 
 ## Usage
 
