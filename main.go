@@ -31,3 +31,39 @@ func SubsidyAtHeightWithConfig(height int64, subsidyInterval int64, initialSubsi
 
 	return initialSubsidy >> uint(halvings)
 }
+
+// Returns a slice with one entry for each halving in the given network
+// until the block reward reaches 0.
+func SubsidySchedule(network Network) []Subsidy {
+	switch network {
+	case BitcoinMainnet:
+		return SubsidyScheduleWithConfig(210000, 50*100000000, 64)
+	case LitecoinMainnet:
+		return SubsidyScheduleWithConfig(840000, 50*100000000, 64)
+	}
+	return nil
+}
+
+// Returns a slice with one entry for each halving with the given parameters
+// until the block reward reaches 0.
+//
+// Use SubsidySchedule for well-defined networks, and this function for networks
+// whose parameters are not defined in this package.
+func SubsidyScheduleWithConfig(subsidyInterval int64, initialSubsidy int64, halvingLimit int64) []Subsidy {
+	var schedule []Subsidy
+	var height int64
+
+	for i := int64(0); i < halvingLimit; i++ {
+		subsidy := SubsidyAtHeightWithConfig(height, subsidyInterval, initialSubsidy, halvingLimit)
+		schedule = append(schedule, Subsidy{
+			Height:  height,
+			Subsidy: subsidy,
+		})
+		if subsidy == 0 {
+			break
+		}
+		height += subsidyInterval
+	}
+
+	return schedule
+}
