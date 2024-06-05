@@ -55,9 +55,11 @@ func SubsidyScheduleWithConfig(subsidyInterval int64, initialSubsidy int64, halv
 
 	for i := int64(0); i < halvingLimit; i++ {
 		subsidy := SubsidyAtHeightWithConfig(height, subsidyInterval, initialSubsidy, halvingLimit)
+		supply := SupplyAtHeightWithConfig(height, subsidyInterval, initialSubsidy, halvingLimit)
 		schedule = append(schedule, Subsidy{
 			Height:  height,
 			Subsidy: subsidy,
+			Supply:  supply,
 		})
 		if subsidy == 0 {
 			break
