@@ -67,3 +67,40 @@ func SubsidyScheduleWithConfig(subsidyInterval int64, initialSubsidy int64, halv
 
 	return schedule
 }
+
+// Returns the total theoretical supply at the given height for the given network.
+// Note that this function does not account for lost coins, unspendable outputs, or
+// bugs such as Bitcoin's genesis block utxo being unspendable.
+func SupplyAtHeight(network Network, height int64) int64 {
+	switch network {
+	case BitcoinMainnet:
+		return SupplyAtHeightWithConfig(height, 210000, 50*100000000, 64)
+	case LitecoinMainnet:
+		return SupplyAtHeightWithConfig(height, 840000, 50*100000000, 64)
+	}
+
+	return 0
+}
+
+// Returns the total theoretical supply at the given height for a network with the given
+// subsidy interval, initial subsidy, and halving limit.
+func SupplyAtHeightWithConfig(height int64, subsidyInterval int64, initialSubsidy int64, halvingLimit int64) int64 {
+	totalSupply := int64(0)
+
+	for currentHeight := int64(0); currentHeight <= height; currentHeight += subsidyInterval {
+		subsidy := SubsidyAtHeightWithConfig(currentHeight, subsidyInterval, initialSubsidy, halvingLimit)
+		if subsidy == 0 {
+			break
+		}
+
+		remainingBlocks := height - currentHeight
+		if remainingBlocks >= subsidyInterval {
+			totalSupply += subsidy * subsidyInterval
+		} else {
+			totalSupply += subsidy * (remainingBlocks + 1)
+			break
+		}
+	}
+
+	return totalSupply
+}

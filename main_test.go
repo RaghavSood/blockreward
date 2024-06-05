@@ -1,6 +1,8 @@
 package blockreward
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestSubsidyAtHeight(t *testing.T) {
 	tests := []struct {
@@ -193,6 +195,49 @@ func TestSubsidySchedule(t *testing.T) {
 				t.Errorf("SubsidySchedule(%v) = %v, want %v", test.network, subsidies, test.want)
 				break
 			}
+		}
+	}
+}
+
+func TestSupplyAtHeight(t *testing.T) {
+	tests := []struct {
+		network Network
+		height  int64
+		want    int64
+	}{
+		{BitcoinMainnet, 0, 5000000000},
+		{BitcoinMainnet, 1, 10000000000},
+		{BitcoinMainnet, 209999, 1050000000000000},
+		{BitcoinMainnet, 210000, 1050002500000000},
+		{BitcoinMainnet, 419999, 1575000000000000},
+		{BitcoinMainnet, 420000, 1575001250000000},
+		{BitcoinMainnet, 629999, 1837500000000000},
+		{BitcoinMainnet, 630000, 1837500625000000},
+		{BitcoinMainnet, 839999, 1968750000000000},
+		{BitcoinMainnet, 840000, 1968750312500000},
+		{BitcoinMainnet, 1049999, 2034375000000000},
+		{BitcoinMainnet, 1050000, 2034375156250000},
+		{BitcoinMainnet, 1259999, 2067187500000000},
+		{BitcoinMainnet, 1260000, 2067187578125000},
+		{BitcoinMainnet, 1469999, 2083593750000000},
+		{BitcoinMainnet, 1470000, 2083593789062500},
+		{BitcoinMainnet, 1679999, 2091796875000000},
+		{BitcoinMainnet, 1680000, 2091796894531250},
+		{BitcoinMainnet, 1889999, 2095898437500000},
+		{BitcoinMainnet, 1890000, 2095898447265625},
+		{BitcoinMainnet, 2099999, 2097949218750000},
+		{BitcoinMainnet, 2100000, 2097949223632812},
+		{BitcoinMainnet, 2309999, 2098974609270000},
+		{BitcoinMainnet, 2310000, 2098974611711406},
+		{BitcoinMainnet, 2519999, 2099487304530000},
+		{BitcoinMainnet, 2520000, 2099487305750703},
+		{BitcoinMainnet, 2729999, 2099743652160000},
+		{BitcoinMainnet, 2730000, 2099743652770351},
+	}
+
+	for _, test := range tests {
+		if got := SupplyAtHeight(test.network, test.height); got != test.want {
+			t.Errorf("ExpectedSupplyAtHeight(%v, %v) = %v, want %v", test.network, test.height, got, test.want)
 		}
 	}
 }
